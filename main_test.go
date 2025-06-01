@@ -14,49 +14,28 @@ func Test(t *testing.T) {
 
 	runCases := []testCase{
 		{
-			email{isSubscribed: true, body: "Whoa there!", toAddress: "soldier@monty.com"},
-			"soldier@monty.com",
+			email{true, "hello there", "kit@boga.com"},
+			"kit@boga.com",
 			0.11,
 		},
 		{
-			sms{isSubscribed: false, body: "Halt! Who goes there?", toPhoneNumber: "+155555509832"},
+			sms{false, "This is Microsoft. Your computer has a virus. Please send gift cards to fix it.", "+155555509832"},
 			"+155555509832",
-			2.1,
+			7.9,
 		},
 	}
 
 	submitCases := append(runCases, []testCase{
+		{invalid{}, "", 0},
 		{
-			email{
-				isSubscribed: false,
-				body:         "It is I, Arthur, son of Uther Pendragon, from the castle of Camelot. King of the Britons, defeator of the Saxons, sovereign of all England!",
-				toAddress:    "soldier@monty.com",
-			},
-			"soldier@monty.com",
-			6.95,
+			email{false, "This meeting could have been an email", "jane@doe.com"},
+			"jane@doe.com",
+			1.85,
 		},
 		{
-			email{
-				isSubscribed: true,
-				body:         "Pull the other one!",
-				toAddress:    "arthur@monty.com",
-			},
-			"arthur@monty.com",
-			0.19,
-		},
-		{
-			sms{
-				isSubscribed:  true,
-				body:          "I am. And this my trusty servant Patsy.",
-				toPhoneNumber: "+155555509832",
-			},
-			"+155555509832",
-			1.17,
-		},
-		{
-			invalid{},
-			"",
-			0.0,
+			sms{false, "Please sir/madam", "+155555504444"},
+			"+155555504444",
+			1.6,
 		},
 	}...)
 
@@ -65,9 +44,10 @@ func Test(t *testing.T) {
 		testCases = submitCases
 	}
 
+	skipped := len(submitCases) - len(testCases)
+
 	passCount := 0
 	failCount := 0
-	skipped := len(submitCases) - len(testCases)
 
 	for _, test := range testCases {
 		to, cost := getExpenseReport(test.expense)
