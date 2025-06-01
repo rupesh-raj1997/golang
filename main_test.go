@@ -2,53 +2,56 @@ package main
 
 import (
 	"fmt"
+	"reflect"
 	"testing"
 )
 
-func TestGetBasicAuth(t *testing.T) {
-	fmt.Println("Running TestGetBasicAuth", "withSubmit:", withSubmit)
+func Test(t *testing.T) {
+	if !withSubmit {
+		t.Skip("Skipping test as it is not run with submit button")
+	}
 	type testCase struct {
-		auth     authenticationInfo
-		expected string
+		name     string
+		expected uintptr
 	}
 
 	runCases := []testCase{
-		{authenticationInfo{"Google", "12345"}, "Authorization: Basic Google:12345"},
-		{authenticationInfo{"Bing", "98765"}, "Authorization: Basic Bing:98765"},
+		{"contact", uintptr(24)},
+		{"perms", uintptr(16)},
 	}
 
-	submitCases := append(runCases, []testCase{
-		{authenticationInfo{"DDG", "76921"}, "Authorization: Basic DDG:76921"},
-	}...)
+	submitCases := append(runCases, []testCase{}...)
 
-	testCases := runCases
-	if withSubmit {
-		testCases = submitCases
-	}
-
-	skipped := len(submitCases) - len(testCases)
-
+	skipped := len(submitCases) - len(submitCases)
 	passCount := 0
 	failCount := 0
 
-	for _, test := range testCases {
-		output := test.auth.getBasicAuth()
-		if output != test.expected {
+	for _, test := range submitCases {
+		var typ reflect.Type
+		if test.name == "contact" {
+			typ = reflect.TypeOf(contact{})
+		} else if test.name == "perms" {
+			typ = reflect.TypeOf(perms{})
+		}
+
+		size := typ.Size()
+
+		if size != test.expected {
 			failCount++
 			t.Errorf(`---------------------------------
-Inputs:     %+v
-Expecting:  %s
-Actual:     %s
+Inputs:     (%v)
+Expecting:  %v bytes
+Actual:     %v bytes
 Fail
-`, test.auth, test.expected, output)
+`, test.name, test.expected, size)
 		} else {
 			passCount++
 			fmt.Printf(`---------------------------------
-Inputs:     %+v
-Expecting:  %s
-Actual:     %s
+Inputs:     (%v)
+Expecting:  %v bytes
+Actual:     %v bytes
 Pass
-`, test.auth, test.expected, output)
+`, test.name, test.expected, size)
 		}
 	}
 

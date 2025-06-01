@@ -1,11 +1,27 @@
 package main
 
-type authenticationInfo struct {
-	username string
-	password string
+import (
+	"fmt"
+	"reflect"
+)
+
+type contact struct {
+	sendingLimit int32
+	age          int32
+	userID       string
 }
 
-// create the method below
-func (a authenticationInfo) getBasicAuth() string {
-	return "Authorization: Basic " + a.username + ":" + a.password
+type perms struct {
+	permissionLevel int
+	canSend         bool
+	canReceive      bool
+	canManage       bool
+}
+
+func main() {
+
+	typ := reflect.TypeOf(contact{})
+	fmt.Printf("Struct is %d bytes\n", typ.Size())
+	typ = reflect.TypeOf(perms{})
+	fmt.Printf("Struct is %d bytes\n", typ.Size())
 }
