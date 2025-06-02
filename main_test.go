@@ -7,20 +7,19 @@ import (
 
 func Test(t *testing.T) {
 	type testCase struct {
-		msgToCustomer string
-		msgToSpouse   string
-		expectedCost  int
-		expectedErr   error
+		cost      float64
+		recipient string
+		expected  string
 	}
 
 	runCases := []testCase{
-		{"Thanks for coming in to our flower shop today!", "We hope you enjoyed your gift.", 0, fmt.Errorf("can't send texts over 25 characters")},
-		{"Thanks for joining us!", "Have a good day.", 76, nil},
+		{1.4, "+1 (435) 555 0923", "SMS that costs $1.40 to be sent to '+1 (435) 555 0923' can not be sent"},
+		{2.1, "+2 (702) 555 3452", "SMS that costs $2.10 to be sent to '+2 (702) 555 3452' can not be sent"},
 	}
 
 	submitCases := append(runCases, []testCase{
-		{"Thank you.", "Enjoy!", 32, nil},
-		{"We loved having you in!", "We hope the rest of your evening is fantastic.", 0, fmt.Errorf("can't send texts over 25 characters")},
+		{32.1, "+1 (801) 555 7456", "SMS that costs $32.10 to be sent to '+1 (801) 555 7456' can not be sent"},
+		{14.4, "+1 (234) 555 6545", "SMS that costs $14.40 to be sent to '+1 (234) 555 6545' can not be sent"},
 	}...)
 
 	testCases := runCases
@@ -33,31 +32,23 @@ func Test(t *testing.T) {
 	failCount := 0
 
 	for _, test := range testCases {
-		cost, err := sendSMSToCouple(test.msgToCustomer, test.msgToSpouse)
-		errString := ""
-		if err != nil {
-			errString = err.Error()
-		}
-		expectedErrString := ""
-		if test.expectedErr != nil {
-			expectedErrString = test.expectedErr.Error()
-		}
-		if cost != test.expectedCost || errString != expectedErrString {
+		output := getSMSErrorString(test.cost, test.recipient)
+		if output != test.expected {
 			failCount++
 			t.Errorf(`---------------------------------
 Inputs:     (%v, %v)
-Expecting:  (%v, %v)
-Actual:     (%v, %v)
+Expecting:  %v
+Actual:     %v
 Fail
-`, test.msgToCustomer, test.msgToSpouse, test.expectedCost, test.expectedErr, cost, err)
+`, test.cost, test.recipient, test.expected, output)
 		} else {
 			passCount++
 			fmt.Printf(`---------------------------------
 Inputs:     (%v, %v)
-Expecting:  (%v, %v)
-Actual:     (%v, %v)
+Expecting:  %v
+Actual:     %v
 Pass
-`, test.msgToCustomer, test.msgToSpouse, test.expectedCost, test.expectedErr, cost, err)
+`, test.cost, test.recipient, test.expected, output)
 		}
 	}
 
@@ -67,6 +58,7 @@ Pass
 	} else {
 		fmt.Printf("%d passed, %d failed\n", passCount, failCount)
 	}
+
 }
 
 // withSubmit is set at compile time depending
