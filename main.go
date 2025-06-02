@@ -1,11 +1,18 @@
 package main
 
-func bulkSend(numMessages int) float64 {
-	var total float64
+func maxMessages(thresh int) int {
+	var maxMessages = 0
 
-	for i := 0; i < numMessages; i++ {
-		total += 1.0 + 0.01*float64(i)
+	for i := 0; ; i++ {
+		msgCost := 100 + i
+
+		if thresh >= msgCost {
+			thresh -= msgCost
+			maxMessages += 1
+		} else {
+			break
+		}
 	}
 
-	return total
+	return maxMessages
 }
