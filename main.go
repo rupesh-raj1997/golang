@@ -1,50 +1,30 @@
 package main
 
-type notification interface {
-	importance() int
-}
+import (
+	"fmt"
+)
 
-type directMessage struct {
-	senderUsername string
-	messageContent string
-	priorityLevel  int
-	isUrgent       bool
-}
-
-type groupMessage struct {
-	groupName      string
-	messageContent string
-	priorityLevel  int
-}
-
-type systemAlert struct {
-	alertCode      string
-	messageContent string
-}
-
-func (d directMessage) importance() int {
-	if d.isUrgent {
-		return 50
+func sendSMSToCouple(msgToCustomer, msgToSpouse string) (int, error) {
+	custCost, err := sendSMS(msgToCustomer)
+	if err != nil {
+		return 0, err
 	}
-	return d.priorityLevel
-}
 
-func (g groupMessage) importance() int {
-	return g.priorityLevel
-}
-
-func (s systemAlert) importance() int {
-	return 100
-}
-
-func processNotification(n notification) (string, int) {
-	switch ty := n.(type) {
-	case directMessage:
-		return ty.senderUsername, ty.importance()
-	case groupMessage:
-		return ty.groupName, ty.importance()
-	case systemAlert:
-		return ty.alertCode, ty.importance()
+	custSpouseCost, err := sendSMS(msgToSpouse)
+	if err != nil {
+		return 0, err
 	}
-	return "", 0
+
+	return custCost + custSpouseCost, nil
+}
+
+// don't edit below this line
+
+func sendSMS(message string) (int, error) {
+	const maxTextLen = 25
+	const costPerChar = 2
+	if len(message) > maxTextLen {
+		return 0, fmt.Errorf("can't send texts over %v characters", maxTextLen)
+	}
+	return costPerChar * len(message), nil
 }
