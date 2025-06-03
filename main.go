@@ -1,16 +1,25 @@
 package main
 
-func getMaxMessagesToSend(costMultiplier float64, maxCostInPennies int) int {
-	actualCostInPennies := 1.0
-	maxMessagesToSend := 1
-	balance := float64(maxCostInPennies) - actualCostInPennies
-	for balance > 0 {
-		actualCostInPennies *= costMultiplier
-		balance -= actualCostInPennies
-		maxMessagesToSend++
+import "fmt"
+
+func fizzbuzz() {
+	for i := 1; i <= 100; i++ {
+		if i%3 != 0 && i%5 != 0 {
+			fmt.Println(i)
+		} else {
+			if i%3 == 0 && i%5 == 0 {
+				fmt.Println("fizzbuzz")
+			} else if i%3 == 0 {
+				fmt.Println("fizz")
+			} else if i%5 == 0 {
+				fmt.Println("buzz")
+			}
+		}
 	}
-	if balance < 0 {
-		maxMessagesToSend--
-	}
-	return maxMessagesToSend
+}
+
+// don't touch below this line
+
+func main() {
+	fizzbuzz()
 }
