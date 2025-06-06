@@ -1,25 +1,11 @@
 package main
 
-import "fmt"
-
-func fizzbuzz() {
-	for i := 1; i <= 100; i++ {
-		if i%3 != 0 && i%5 != 0 {
-			fmt.Println(i)
-		} else {
-			if i%3 == 0 && i%5 == 0 {
-				fmt.Println("fizzbuzz")
-			} else if i%3 == 0 {
-				fmt.Println("fizz")
-			} else if i%5 == 0 {
-				fmt.Println("buzz")
-			}
+func countConnections(groupSize int) int {
+	connections := 0
+	for i := 0; i < groupSize; i++ {
+		for j := i + 1; j < groupSize; j++ {
+			connections += 1
 		}
 	}
-}
-
-// don't touch below this line
-
-func main() {
-	fizzbuzz()
+	return connections
 }
