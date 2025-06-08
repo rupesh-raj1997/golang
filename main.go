@@ -1,31 +1,31 @@
 package main
 
-// At least 5 characters long but no more than 12 characters.
-// Contains at least one uppercase letter.
-// Contains at least one digit.
+import "strings"
 
-func isValidPassword(password string) bool {
-	if len(password) > 12 || len(password) < 5 {
-		return false
+type sms struct {
+	id      string
+	content string
+	tags    []string
+}
+
+func tagMessages(messages []sms, tagger func(sms) []string) []sms {
+	var data []sms
+	for _, msg := range messages {
+		msg.tags = tagger(msg)
+		data = append(data, msg)
+	}
+	return data
+}
+
+func tagger(msg sms) []string {
+	tags := []string{}
+
+	if strings.Contains(strings.ToLower(msg.content), "urgent") {
+		tags = append(tags, "Urgent")
+	}
+	if strings.Contains(strings.ToLower(msg.content), "sale") {
+		tags = append(tags, "Promo")
 	}
 
-	hasUppercase := false
-	hasDigit := false
-
-	for _, ch := range password {
-		if ch >= 'A' && ch <= 'Z' {
-			hasUppercase = true
-		}
-
-		if ch >= '0' && ch <= '9' {
-			hasDigit = true
-		}
-	}
-
-	if !hasUppercase || !hasDigit {
-		return false
-	}
-
-	return true
-
+	return tags
 }
