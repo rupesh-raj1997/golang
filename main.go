@@ -1,47 +1,31 @@
 package main
 
-type Message interface {
-	Type() string
-}
+// At least 5 characters long but no more than 12 characters.
+// Contains at least one uppercase letter.
+// Contains at least one digit.
 
-type TextMessage struct {
-	Sender  string
-	Content string
-}
+func isValidPassword(password string) bool {
+	if len(password) > 12 || len(password) < 5 {
+		return false
+	}
 
-func (tm TextMessage) Type() string {
-	return "text"
-}
+	hasUppercase := false
+	hasDigit := false
 
-type MediaMessage struct {
-	Sender    string
-	MediaType string
-	Content   string
-}
+	for _, ch := range password {
+		if ch >= 'A' && ch <= 'Z' {
+			hasUppercase = true
+		}
 
-func (mm MediaMessage) Type() string {
-	return "media"
-}
-
-type LinkMessage struct {
-	Sender  string
-	URL     string
-	Content string
-}
-
-func (lm LinkMessage) Type() string {
-	return "link"
-}
-
-// Don't touch above this line
-
-func filterMessages(messages []Message, filterType string) []Message {
-	var filterdMsgs []Message
-	for _, message := range messages {
-		if filterType == message.Type() {
-			filterdMsgs = append(filterdMsgs, message)
+		if ch >= '0' && ch <= '9' {
+			hasDigit = true
 		}
 	}
 
-	return filterdMsgs
+	if !hasUppercase || !hasDigit {
+		return false
+	}
+
+	return true
+
 }
