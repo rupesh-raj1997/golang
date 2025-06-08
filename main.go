@@ -1,9 +1,16 @@
 package main
 
-func sum(nums ...int) int {
-	var sum = 0
-	for _, num := range nums {
-		sum += num
+type cost struct {
+	day   int
+	value float64
+}
+
+func getDayCosts(costs []cost, day int) []float64 {
+	total := make([]float64, 0)
+	for _, cost := range costs {
+		if cost.day == day {
+			total = append(total, cost.value)
+		}
 	}
-	return sum
+	return total
 }
