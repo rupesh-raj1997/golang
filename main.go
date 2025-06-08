@@ -1,10 +1,9 @@
 package main
 
-func getMessageCosts(messages []string) []float64 {
-	size := len(messages)
-	costs := make([]float64, size, size)
-	for i, message := range messages {
-		costs[i] = 0.01 * float64(len(message))
+func sum(nums ...int) int {
+	var sum = 0
+	for _, num := range nums {
+		sum += num
 	}
-	return costs
+	return sum
 }
