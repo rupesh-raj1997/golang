@@ -1,14 +1,47 @@
 package main
 
-func createMatrix(rows, cols int) [][]int {
-	matrix := make([][]int, rows)
+type Message interface {
+	Type() string
+}
 
-	for i := 0; i < rows; i++ {
-		matrix[i] = make([]int, cols)
-		for j := 0; j < cols; j++ {
-			matrix[i][j] = i * j
+type TextMessage struct {
+	Sender  string
+	Content string
+}
+
+func (tm TextMessage) Type() string {
+	return "text"
+}
+
+type MediaMessage struct {
+	Sender    string
+	MediaType string
+	Content   string
+}
+
+func (mm MediaMessage) Type() string {
+	return "media"
+}
+
+type LinkMessage struct {
+	Sender  string
+	URL     string
+	Content string
+}
+
+func (lm LinkMessage) Type() string {
+	return "link"
+}
+
+// Don't touch above this line
+
+func filterMessages(messages []Message, filterType string) []Message {
+	var filterdMsgs []Message
+	for _, message := range messages {
+		if filterType == message.Type() {
+			filterdMsgs = append(filterdMsgs, message)
 		}
 	}
 
-	return matrix
+	return filterdMsgs
 }
