@@ -1,13 +1,27 @@
 package main
 
-import (
-	"strings"
-)
+type Analytics struct {
+	MessagesTotal     int
+	MessagesFailed    int
+	MessagesSucceeded int
+}
 
-func removeProfanity(message *string) {
-	msg := *message
-	msg = strings.ReplaceAll(msg, "fubb", "****")
-	msg = strings.ReplaceAll(msg, "shiz", "****")
-	msg = strings.ReplaceAll(msg, "witch", "*****")
-	*message = msg
+type Message struct {
+	Recipient string
+	Success   bool
+}
+
+// Write a getMessageText function.
+// It should accept a pointer to an Analytics struct and a Message struct (not a pointer).
+// It should look at the Success field of the Message struct and, based on that,
+// increment the MessagesTotal, MessagesSucceeded, or MessagesFailed fields of
+// the Analytics struct as appropriate.
+
+func getMessageText(anal *Analytics, msg Message) {
+	if msg.Success {
+		(*anal).MessagesSucceeded++
+	} else {
+		(*anal).MessagesFailed++
+	}
+	(*anal).MessagesTotal++
 }
