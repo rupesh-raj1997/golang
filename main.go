@@ -1,21 +1,24 @@
 package main
 
-func getNameCounts(names []string) map[rune]map[string]int {
-	nameCounts := make(map[rune]map[string]int)
-	for _, name := range names {
-		runes := []rune(name)
-		firstCh := runes[0]
+import (
+	"fmt"
+	"strings"
+)
 
-		if savedMap, ok := nameCounts[firstCh]; ok {
-			if count, present := savedMap[name]; present {
-				savedMap[name] = count + 1
+func countDistinctWords(messages []string) int {
+	counts := make(map[string]int)
+
+	for _, message := range messages {
+		lower := strings.Fields(strings.ToLower(strings.ReplaceAll(message, "!", "")))
+		fmt.Println(lower)
+		for _, str := range lower {
+			if count, ok := counts[str]; ok {
+				counts[str] = count + 1
 			} else {
-				savedMap[name] = 1
+				counts[str] = 1
 			}
-		} else {
-			nameCounts[firstCh] = map[string]int{name: 1}
 		}
 	}
 
-	return nameCounts
+	return len(counts)
 }
